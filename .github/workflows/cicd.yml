@@ -41,6 +41,6 @@ jobs:
           port: 22
           debug: true
           script: |
-            docker pull ${{ secrets.REGISTRY_URL }}/myapp:latest
+            docker pull registry.seaton.codes/myapp:latest
             docker-compose -f /home/youruser/app/docker-compose.yml down
             docker-compose -f /home/youruser/app/docker-compose.yml up -d
