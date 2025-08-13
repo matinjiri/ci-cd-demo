@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  myapp:
+    image: 46.249.100.7:5000/myapp:latest # pull from registry
+    ports:
+      - "${PORT}:${PORT}" 
+    env_file:
+      - .env
+    restart: always

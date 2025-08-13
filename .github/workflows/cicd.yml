@@ -1,0 +1,46 @@
+name: CI and CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: npm install
+      - run: npm test
+
+  cd:
+    needs: ci
+    runs-on: ubuntu-latest
+    if: success()  
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY_URL }} -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+
+      - run: docker build -t ${{ secrets.REGISTRY_URL }}/myapp:latest .
+
+      - run: docker push ${{ secrets.REGISTRY_URL }}/myapp:latest
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          debug: true
+          script: |
+            docker pull ${{ secrets.REGISTRY_URL }}/myapp:latest
+            docker-compose -f /home/youruser/app/docker-compose.yml down
+            docker-compose -f /home/youruser/app/docker-compose.yml up -d
