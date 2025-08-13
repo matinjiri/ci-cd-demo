@@ -28,9 +28,9 @@ jobs:
 
       - run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY_URL }} -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
 
-      - run: docker build -t ${{ secrets.REGISTRY_URL }}/myapp:latest .
+      - run: docker build -t registry.seaton.codes/myapp:latest .
 
-      - run: docker push ${{ secrets.REGISTRY_URL }}/myapp:latest
+      - run: docker push registry.seaton.codes/myapp:latest
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.7
