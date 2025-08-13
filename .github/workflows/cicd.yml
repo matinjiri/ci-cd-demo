@@ -61,10 +61,10 @@ jobs:
           debug: true
           script: |
             # Login to private registry on server
-            echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY_URL }} -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+            echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.seaton.codes -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
 
             # Pull the latest image
-            docker pull ${{ secrets.REGISTRY_URL }}/myapp:latest
+            docker pull registry.seaton.codes/myapp:latest
 
             # Stop old containers and start new ones
             docker-compose -f /home/${{ secrets.SERVER_USER }}/app/docker-compose.yml down
