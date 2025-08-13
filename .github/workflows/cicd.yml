@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.seaton.codes -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+      - run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.seaton.codes -u root --password-stdin
 
       - run: docker build -t registry.seaton.codes/myapp:latest .
 
@@ -41,7 +41,7 @@ jobs:
           port: 22
           debug: true
           script: |
-            echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.seaton.codes -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+            echo root | docker login registry.seaton.codes -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
             docker pull registry.seaton.codes/myapp:latest
-            docker-compose -f /home/${{ secrets.SERVER_USER }}/app/docker-compose.yml down
-            docker-compose -f /home/${{ secrets.SERVER_USER }}/app/docker-compose.yml up -d
+            docker-compose -f /home/root/app/docker-compose.yml down
+            docker-compose -f /home/root/app/docker-compose.yml up -d
