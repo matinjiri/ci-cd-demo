@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY_URL }} -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+      - run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.seaton.codes -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
 
       - run: docker build -t registry.seaton.codes/myapp:latest .
 
