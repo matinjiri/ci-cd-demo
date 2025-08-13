@@ -61,7 +61,7 @@ jobs:
           debug: true
           script: |
             # Login to private registry on server
-            echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.seaton.codes -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+            echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.seaton.codes -u root --password-stdin
 
             # Pull the latest image
             docker pull registry.seaton.codes/myapp:latest
