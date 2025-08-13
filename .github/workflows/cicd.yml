@@ -46,6 +46,6 @@ jobs:
             # Pull the latest image from the registry
             docker pull registry.seaton.codes/myapp:latest
             # Stop the old container
-            docker-compose -f /home/root/app/docker-compose.yml down
+            docker-compose -f /home/${{ secrets.SERVER_USER }}/app/docker-compose.yml down
             # Start the new container
-            docker-compose -f /home/root/app/docker-compose.yml up -d
+            docker-compose -f /home/${{ secrets.SERVER_USER }}/app/docker-compose.yml up -d
