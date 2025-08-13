@@ -26,7 +26,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.seaton.codes -u root --password-stdin
+      # Log in to the Docker registry on the GitHub Actions runner
+      - run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.seaton.codes -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
 
       - run: docker build -t registry.seaton.codes/myapp:latest .
 
@@ -40,8 +41,11 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           debug: true
+          # The script to run on the remote server
           script: |
-            echo root | docker login registry.seaton.codes -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+            # Pull the latest image from the registry
             docker pull registry.seaton.codes/myapp:latest
+            # Stop the old container
             docker-compose -f /home/root/app/docker-compose.yml down
+            # Start the new container
             docker-compose -f /home/root/app/docker-compose.yml up -d
