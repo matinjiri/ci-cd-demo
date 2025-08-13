@@ -41,6 +41,7 @@ jobs:
           port: 22
           debug: true
           script: |
+            echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.seaton.codes -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
             docker pull registry.seaton.codes/myapp:latest
-            docker-compose -f /home/youruser/app/docker-compose.yml down
-            docker-compose -f /home/youruser/app/docker-compose.yml up -d
+            docker-compose -f /home/${{ secrets.SERVER_USER }}/app/docker-compose.yml down
+            docker-compose -f /home/${{ secrets.SERVER_USER }}/app/docker-compose.yml up -d
