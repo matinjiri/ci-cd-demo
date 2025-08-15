@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test]
     steps: 
-    
+
     - name: Setup SSH key
       run: |
         mkdir -p ~/.ssh
@@ -41,9 +41,6 @@ jobs:
     - name: Set ENV variable and deploy
       run: |
         ssh -i ~/.ssh/id_github_actions root@46.249.100.7 <<EOF
-        export EMAIL_HOST_NAME=${{ secrets.EMAIL_HOST_NAME }}
-        export EMAIL_USER_NAME=${{ secrets.EMAIL_USER_NAME }}
-        export EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}
         cd ci-cd-demo
         docker compose -f docker-compose.yml pull -q
         docker compose -f docker-compose.yml up -d
