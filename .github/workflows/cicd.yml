@@ -23,7 +23,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test]
     steps: 
-      
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_SSH_KEY }}" > chmod 600 ~/.ssh/id_github_actions
+          chmod 600 chmod 600 ~/.ssh/id_github_actions
+          ssh-keyscan -H 46.249.100.7 >> ~/.ssh/known_hosts
+
       - name: Create deployment folder
         run: ssh root@46.249.100.7 "mkdir -p ci-cd-demo"
       
@@ -40,5 +46,4 @@ jobs:
           docker compose -f docker-compose.yml pull -q
           docker compose -f docker-compose.yml up -d
           EOF
-
 
