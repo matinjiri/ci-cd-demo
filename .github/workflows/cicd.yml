@@ -37,10 +37,8 @@ jobs:
       - name: Create deployment folder
         run: ssh -i ~/.ssh/id_github_actions root@46.249.100.7 "mkdir -p ci-cd-demo"
       
-      - name: Copy docker-compose file
-        run: |
-          cd $GITHUB_WORKSPACE
-          scp -i ~/.ssh/id_github_actions docker-compose.yml root@46.249.100.7:ci-cd-demo/docker-compose.yml
+      - name: Copy app folder
+        run: scp -i ~/.ssh/id_github_actions -r . root@46.249.100.7:ci-cd-demo/
 
       - name: deploy
         run: |
