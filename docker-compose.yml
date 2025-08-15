@@ -3,6 +3,6 @@ services:
     image: registry.seaton.codes/myapp:latest
     ports:
       - "${PORT}:${PORT}"
-    env_file:
-      - .env
+    environment:
+      PORT: ${PORT}
     restart: always
