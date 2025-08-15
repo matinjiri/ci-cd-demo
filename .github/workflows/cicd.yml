@@ -62,6 +62,6 @@ jobs:
           ssh -i ~/.ssh/id_github_actions -T root@46.249.100.7 <<EOF
           docker login registry.seaton.codes -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
           export PORT=3000
-          docker compose pull
-          docker compose up -d --remove-orphans
+          docker-compose pull
+          docker-compose up -d --remove-orphans
           EOF
