@@ -57,11 +57,18 @@ jobs:
           chmod 600 ~/.ssh/id_github_actions
           ssh-keyscan -H 46.249.100.7 >> ~/.ssh/known_hosts
 
+      - name: Create deployment folder
+        run: ssh root@46.249.100.7 "mkdir -p ci-cd-demo"
+      
+      - name: Copy docker-compose file
+        run: scp -oStrictHostKeyChecking=no docker-compose.yml root@46.249.100.7:ci-cd-demo/docker-compose.yml
+
       - name: Deploy
         run: |
           ssh -i ~/.ssh/id_github_actions -T root@46.249.100.7 <<EOF
           docker login registry.seaton.codes -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
           export PORT=3000
+          cd ci-cd-demo
           docker compose pull
           docker compose up -d --remove-orphans
           EOF
