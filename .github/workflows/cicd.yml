@@ -23,28 +23,23 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test]
     steps: 
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_github_actions
+          chmod 600 ~/.ssh/id_github_actions
+          ssh-keyscan -H 46.249.100.7 >> ~/.ssh/known_hosts
 
-    - name: List repo files
-      run: ls -R
+      - name: Create deployment folder
+        run: ssh -i ~/.ssh/id_github_actions root@46.249.100.7 "mkdir -p ci-cd-demo"
+      
+      - name: Copy docker-compose file
+        run: scp -i ~/.ssh/id_github_actions docker-compose.yml root@46.249.100.7:ci-cd-demo/docker-compose.yml
 
-    - name: Setup SSH key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_github_actions
-        chmod 600 ~/.ssh/id_github_actions
-        ssh-keyscan -H 46.249.100.7 >> ~/.ssh/known_hosts
-
-
-    - name: Create deployment folder
-      run: ssh -i ~/.ssh/id_github_actions root@46.249.100.7 "mkdir -p ci-cd-demo"
-
-    - name: Copy docker-compose file
-      run: scp -i ~/.ssh/id_github_actions docker-compose.yml root@46.249.100.7:ci-cd-demo/docker-compose.yml
-
-    - name: Set ENV variable and deploy
-      run: |
-        ssh -i ~/.ssh/id_github_actions root@46.249.100.7 <<EOF
-        cd ci-cd-demo
-        docker compose -f docker-compose.yml pull -q
-        docker compose -f docker-compose.yml up -d
-        EOF
+      - name: Set ENV variable and deploy
+        run: |
+          ssh -i ~/.ssh/id_github_actions root@46.249.100.7 <<EOF
+          cd ci-cd-demo
+          docker compose -f docker-compose.yml pull -q
+          docker compose -f docker-compose.yml up -d
+          EOF
