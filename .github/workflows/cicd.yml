@@ -37,7 +37,9 @@ jobs:
         run: ssh -i ~/.ssh/id_github_actions root@46.249.100.7 "mkdir -p ci-cd-demo"
       
       - name: Copy docker-compose file
-        run: scp -i ~/.ssh/id_github_actions docker-compose.yml root@46.249.100.7:ci-cd-demo/docker-compose.yml
+        run: |
+          cd $GITHUB_WORKSPACE
+          scp -i ~/.ssh/id_github_actions docker-compose.yml root@46.249.100.7:ci-cd-demo/docker-compose.yml
 
       - name: Set ENV variable and deploy
         run: |
