@@ -23,6 +23,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test]
     steps: 
+      - name: List files
+        run: ls -la $GITHUB_WORKSPACE
+
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
