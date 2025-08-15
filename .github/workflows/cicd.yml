@@ -28,16 +28,16 @@ jobs:
 
       - name: Build Docker image
         run: |
-          IMAGE_NAME=registry.seato.codes/myapp
+          IMAGE_NAME=registry.seaton.codes/myapp
           TAG=${{ github.sha }}
           docker build -t $IMAGE_NAME:$TAG -t $IMAGE_NAME:latest .
 
       - name: Login to private registry
-        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.seato.codes -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.seaton.codes -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
 
       - name: Push Docker image
         run: |
-          IMAGE_NAME=registry.seato.codes/myapp
+          IMAGE_NAME=registry.seaton.codes/myapp
           TAG=${{ github.sha }}
           docker push $IMAGE_NAME:$TAG
           docker push $IMAGE_NAME:latest
@@ -61,7 +61,7 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_github_actions root@46.249.100.7 <<EOF
           cd ci-cd-demo
-          docker login registry.seato.codes -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+          docker login registry.seaton.codes -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
           docker-compose pull
           docker-compose up -d --remove-orphans
           EOF
