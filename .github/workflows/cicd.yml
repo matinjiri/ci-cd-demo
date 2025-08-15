@@ -20,8 +20,7 @@ jobs:
       - run: npm test
 
   deploy:
-    name: Deploy Backend
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [test]
     steps: 
       
