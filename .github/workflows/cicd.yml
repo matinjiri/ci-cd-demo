@@ -2,10 +2,10 @@ name: CI and CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
-    
+    branches: ["main"]
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -14,16 +14,39 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - run: npm install
       - run: npm test
 
-  deploy:
-    if: success()  
+  build-and-push:
+    if: success()
     runs-on: ubuntu-latest
     needs: [test]
-    steps: 
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          IMAGE_NAME=registry.seato.codes/myapp
+          TAG=${{ github.sha }}
+          docker build -t $IMAGE_NAME:$TAG -t $IMAGE_NAME:latest .
+
+      - name: Login to private registry
+        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.seato.codes -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+
+      - name: Push Docker image
+        run: |
+          IMAGE_NAME=registry.seato.codes/myapp
+          TAG=${{ github.sha }}
+          docker push $IMAGE_NAME:$TAG
+          docker push $IMAGE_NAME:latest
+
+  deploy:
+    if: success()
+    runs-on: ubuntu-latest
+    needs: [build-and-push]
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -34,16 +57,11 @@ jobs:
           chmod 600 ~/.ssh/id_github_actions
           ssh-keyscan -H 46.249.100.7 >> ~/.ssh/known_hosts
 
-      - name: Create deployment folder
-        run: ssh -i ~/.ssh/id_github_actions root@46.249.100.7 "mkdir -p ci-cd-demo"
-      
-      - name: Copy app folder
-        run: scp -i ~/.ssh/id_github_actions -r . root@46.249.100.7:ci-cd-demo/
-
       - name: deploy
         run: |
           ssh -i ~/.ssh/id_github_actions root@46.249.100.7 <<EOF
           cd ci-cd-demo
-          docker-compose -f docker-compose.yml pull -q
-          docker-compose -f docker-compose.yml up --build -d
+          docker login registry.seato.codes -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
+          docker-compose pull
+          docker-compose up -d --remove-orphans
           EOF
