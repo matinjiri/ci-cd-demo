@@ -58,7 +58,7 @@ jobs:
           ssh-keyscan -H 46.249.100.7 >> ~/.ssh/known_hosts
 
       - name: Create deployment folder
-        run: ssh root@46.249.100.7 "mkdir -p ci-cd-demo"
+        run: ssh -i ~/.ssh/id_github_actions root@46.249.100.7 "mkdir -p ci-cd-demo"
       
       - name: Copy docker-compose file
         run: scp -oStrictHostKeyChecking=no docker-compose.yml root@46.249.100.7:ci-cd-demo/docker-compose.yml
