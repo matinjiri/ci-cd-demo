@@ -20,6 +20,7 @@ jobs:
       - run: npm test
 
   deploy:
+    if: success()  
     runs-on: ubuntu-latest
     needs: [test]
     steps: 
@@ -41,10 +42,10 @@ jobs:
           cd $GITHUB_WORKSPACE
           scp -i ~/.ssh/id_github_actions docker-compose.yml root@46.249.100.7:ci-cd-demo/docker-compose.yml
 
-      - name: Set ENV variable and deploy
+      - name: deploy
         run: |
           ssh -i ~/.ssh/id_github_actions root@46.249.100.7 <<EOF
           cd ci-cd-demo
           docker-compose -f docker-compose.yml pull -q
-          docker-compose -f docker-compose.yml up -d
+          docker-compose -f docker-compose.yml --build up -d
           EOF
