@@ -26,8 +26,8 @@ jobs:
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SERVER_SSH_KEY }}" > chmod 600 ~/.ssh/id_github_actions
-          chmod 600 chmod 600 ~/.ssh/id_github_actions
+          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_github_actions
+          chmod 600 ~/.ssh/id_github_actions
           ssh-keyscan -H 46.249.100.7 >> ~/.ssh/known_hosts
 
       - name: Create deployment folder
