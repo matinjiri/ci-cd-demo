@@ -24,6 +24,9 @@ jobs:
     needs: [test]
     steps: 
 
+    - name: List repo files
+      run: ls -R
+
     - name: Setup SSH key
       run: |
         mkdir -p ~/.ssh
