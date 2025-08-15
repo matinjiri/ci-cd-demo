@@ -59,7 +59,7 @@ jobs:
 
       - name: deploy
         run: |
-          ssh -i ~/.ssh/id_github_actions root@46.249.100.7 <<EOF
+          ssh -tt ~/.ssh/id_github_actions root@46.249.100.7 <<EOF
           docker login registry.seaton.codes -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }}
           docker-compose pull
           docker-compose up -d --remove-orphans
